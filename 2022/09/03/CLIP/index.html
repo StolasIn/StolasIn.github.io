@@ -26,9 +26,13 @@ html.dataset.dark = localStorage.dark;
 <ul>
 <li><h3 id="Architecture"><a href="#Architecture" class="headerlink" title="Architecture"></a>Architecture</h3>前人主要在處理自然語言的複雜度，而由於 <em>deep contextual representation learning</em> 方法的進步，可以很好的利用這項資源，讓模型學習更豐富的資料，而非拘泥於減少計算量而讓模型效能降低</li>
 </ul>
-<p>在 text encoder 的部分利用了 contrastive learning 的技巧，只需要更少的資料與訓練時間，就可以獲得更高的正確率。</p>
+<p><img src="/images/CLIP/Architecture_1.jpg"><br>在 text encoder 的部分利用了 contrastive learning 的技巧，只需要更少的資料與訓練時間，就可以獲得更高的正確率。</p>
+<p><img src="/images/CLIP/Architecture_2.jpg"><br>接著是 <em>CLIP</em> 的 <em>pre-training</em> ，中間的相乘表示 <em>cosine similarity</em> ，藍色的對角線代表 <em>postive example</em> 需要最大化，其他則是 <em>negtive example</em> 需要最小化。</p>
 <ul>
-<li><h3 id=""><a href="#" class="headerlink" title=""></a></h3></li>
+<li><h3 id="Prompt-Engineering"><a href="#Prompt-Engineering" class="headerlink" title="Prompt Engineering"></a>Prompt Engineering</h3><p>現今常出現的資料集比起 <em>image-text pair</em> ，更多的大概還是標籤資料集，比如 <em>Image-Net</em> ，所以 <em>prompt</em> (前綴句) 就是需要研究的方面，不過在此之前要先提兩個要面對的問題。</p>
+</li>
+<li><p>第一個問題 : 一字多義<br>  這個現象不會特別出現在某個資料集中，因為在製作資料集時會避免這種事情發生，比如使用不同的字詞去替換這些同義詞</p>
+</li>
 <li><h3 id="detail"><a href="#detail" class="headerlink" title="detail"></a>detail</h3></li>
 </ul>
 <h2 id="👓-results"><a href="#👓-results" class="headerlink" title="👓 results"></a>👓 results</h2><p><img src="/images/StackGAN/result4.jpg" alt="MSCOCO"></p>
