@@ -25,22 +25,21 @@ html.dataset.dark = localStorage.dark;
 </ul>
 <p><em>Style Mixing</em> 的做法是先將圖片 <em>project</em> 到 <em>Mapping Network</em> 中，獲得兩個向量 <em>w1</em> 以及 <em>w2</em> ，接著在 <em>Synthesis Network</em> 的許多 <em>block</em> 裡挑一個切點，前半部分輸入 <em>w1</em> 後半輸入 <em>w2</em> ，隨著切點選擇的不同，產生的圖片帶有的資訊也不盡相同，這是因為 <em>Synthesis Network</em> 的每個 <em>block</em> 所負責的部分可能會有差異，比如某個負責臉部表情，某個負責膚色以及質地等等，有很大的操作空間。</p>
 <ul>
-<li><h3 id="Stochastic-Variation"><a href="#Stochastic-Variation" class="headerlink" title="Stochastic Variation"></a>Stochastic Variation</h3>這個特色的存在是希望可以生成圖像中加入一些隨機的特色，通常是為了控制物體的質地 (更自然)，比如頭髮、皮膚等等。</li>
-</ul>
-<p>實現方法是在 <em>Synthesis Network</em> 中的每一個 <em>block</em> 加上 <em>noise</em> ，與先前提到過的相同，隨著 <em>block</em> 負責的區塊不同，影響的部分也不一樣。</p>
-<ul>
-<li><h3 id="Perceptual-Path-Length"><a href="#Perceptual-Path-Length" class="headerlink" title="Perceptual Path Length"></a>Perceptual Path Length</h3>生成圖像本身是不同分布間的對應過程，比如輸入 <em>noise</em> 給生成網路，我們會期待可以產生特定 domain 的結果，這其實就是分布間的轉換。</li>
-</ul>
-<p>而 <em>PPL</em> 其實是一個指標，表示 <em>generator</em> 在訓練時 <em>latent space</em> 的移動是不是最有效率的 (時間t 到時間 t’)，如果是的話，理論上路徑會是一條直線，所以任何對這兩個時間點 <em>w</em> 的線性插值應該也會是相關的，或是順序變化的。</p>
-<ul>
-<li><h3 id="Lazy-regularization"><a href="#Lazy-regularization" class="headerlink" title="Lazy regularization"></a>Lazy regularization</h3><p>過去是每次計算 <em>loss</em> 都會計算一次 <em>regularization</em> ，但作者發現其實可以不那麼頻繁的計算 <em>regularization</em> 也能得到差不多的結果，且可以減少訓練所需的時間。</p>
+<li><h3 id="Stochastic-Variation"><a href="#Stochastic-Variation" class="headerlink" title="Stochastic Variation"></a>Stochastic Variation</h3><p>  這個特色的存在是希望可以生成圖像中加入一些隨機的特色，通常是為了控制物體的質地 (更自然)，比如頭髮、皮膚等等。</p>
+<p>  實現方法是在 <em>Synthesis Network</em> 中的每一個 <em>block</em> 加上 <em>noise</em> ，與先前提到過的相同，隨著 <em>block</em> 負責的區塊不同，影響的部分也不一樣。</p>
 </li>
-<li><h3 id="Path-Length-Regularization"><a href="#Path-Length-Regularization" class="headerlink" title="Path Length Regularization"></a>Path Length Regularization</h3><p>當對兩張圖片的 <em>w</em> 進行線性組合時，我們一般更喜歡連續的點都到 <em>generator</em> 會得到近似的結果，其實意思就是對於 <em>latent space</em> 的變化越大，在生成圖像所表示的變化就應該越大，反之亦然。</p>
+<li><h3 id="Perceptual-Path-Length"><a href="#Perceptual-Path-Length" class="headerlink" title="Perceptual Path Length"></a>Perceptual Path Length</h3><p>  生成圖像本身是不同分布間的對應過程，比如輸入 <em>noise</em> 給生成網路，我們會期待可以產生特定 domain 的結果，這其實就是分布間的轉換。</p>
+<p>  而 <em>PPL</em> 其實是一個指標，表示 <em>generator</em> 在訓練時 <em>latent space</em> 的移動是不是最有效率的 (時間t 到時間 t’)，如果是的話，理論上路徑會是一條直線，所以任何對這兩個時間點 <em>w</em> 的線性插值應該也會是相關的，或是順序變化的。</p>
 </li>
-<li><h3 id="Progressive-Growth"><a href="#Progressive-Growth" class="headerlink" title="Progressive Growth"></a>Progressive Growth</h3><p><em>Progressive Growth</em> 的具體想法是先訓練較低解析度的圖片，等到穩定後，再訓練高解析度的圖片，這樣的做法可以穩定訓練過成，且可以得到更高解析度的圖片。</p>
+<li><h3 id="Lazy-regularization"><a href="#Lazy-regularization" class="headerlink" title="Lazy regularization"></a>Lazy regularization</h3><p>  過去是每次計算 <em>loss</em> 都會計算一次 <em>regularization</em> ，但作者發現其實可以不那麼頻繁的計算 <em>regularization</em> 也能得到差不多的結果，且可以減少訓練所需的時間。</p>
+</li>
+<li><h3 id="Path-Length-Regularization"><a href="#Path-Length-Regularization" class="headerlink" title="Path Length Regularization"></a>Path Length Regularization</h3><p>  當對兩張圖片的 <em>w</em> 進行線性組合時，我們一般更喜歡連續的點都到 <em>generator</em> 會得到近似的結果，其實意思就是對於 <em>latent space</em> 的變化越大，在生成圖像所表示的變化就應該越大，反之亦然。</p>
+<p>  使用這個技巧可以讓 <em>latent code</em> 到圖像的轉換更加順利。</p>
+</li>
+<li><h3 id="Progressive-Growth"><a href="#Progressive-Growth" class="headerlink" title="Progressive Growth"></a>Progressive Growth</h3><p>  <em>Progressive Growth</em> 的具體想法是先訓練較低解析度的圖片，等到穩定後，再訓練高解析度的圖片，這樣的做法可以穩定訓練過成，且可以得到更高解析度的圖片。</p>
+<p>  但相對的作者也找到了他帶來的一些問題，就是會更容易忽視圖像移動的結果，傾向輸出特徵在最常出現的地方。</p>
 </li>
 </ul>
-<p>但相對的作者也找到了他帶來的一些問題，就是會更容易忽視圖像移動的結果，傾向輸出特徵在最常出現的地方。</p>
 <h2 id="👓-results"><a href="#👓-results" class="headerlink" title="👓 results"></a>👓 results</h2><p><img src="/images/StyleGAN_method/example1.jpg" alt="FFHQ"></p>
 <p><img src="/images/StyleGAN_method/example1.jpg" alt="上方 : CHURCH, 下方 : HORSE (LSUN)"></p>
 <h2 id="🔗-reference"><a href="#🔗-reference" class="headerlink" title="🔗 reference"></a>🔗 reference</h2><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1912.04958.pdf">StyleGAN2</a></p>
