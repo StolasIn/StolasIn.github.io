@@ -14,17 +14,14 @@ html.dataset.dark = localStorage.dark;
 <p><img src="/images/StyleGAN_method/begin.jpg"></p>
 <h2 id="👀-Take-a-look"><a href="#👀-Take-a-look" class="headerlink" title="👀 Take a look"></a>👀 Take a look</h2><p><em>StyleGAN</em> 以及後續出現的 <em>StyleGAN2</em> 與 <em>StyleGAN3</em> 在圖像生成領域都具有非常驚人的效果，且都不斷在解決生成圖像的品質問題，在較單一的資料集上可以生成出非常高解析度的圖片。</p>
 <h2 id="🧠-Main-Ideas"><a href="#🧠-Main-Ideas" class="headerlink" title="🧠 Main Ideas"></a>🧠 Main Ideas</h2><ul>
-<li><h3 id="StyleGAN-generator"><a href="#StyleGAN-generator" class="headerlink" title="StyleGAN generator"></a>StyleGAN generator</h3><p>StyleGAN 的網路架構主要包含了兩個部分，分別是 <em>Mapping Network</em> 以及 <em>Synthesis Network</em> ， <em>StyleGAN</em> 與其他傳統的生成網路最不一樣的地方就是不直接使用 <em>noise</em> 來當作輸入，而是使用經過 <em>Mapping Network</em> 後的向量 (W)，作為後方 <em>Synthesis Network</em> 的輸入，並在每一個 <em>Synthesis Block</em> 都加上 <em>W</em> 。</p>
+<li><h3 id="StyleGAN-generator"><a href="#StyleGAN-generator" class="headerlink" title="StyleGAN generator"></a>StyleGAN generator</h3><p>  Network* 的輸入，並在每一個 <em>Synthesis Block</em> 都加上 <em>W</em> 。</p>
 </li>
-<li><h3 id="Mapping-Network"><a href="#Mapping-Network" class="headerlink" title="Mapping Network"></a>Mapping Network</h3><p>簡單來說 <em>Mapping Network</em> 希望可以更好的解釋資料集，抓到其中的特徵，比如人臉或是車輛的輸入，而這些特色彼此之間可能具有許多關聯，所以使用一個 <em>Style</em> 來表達會比直接輸入 <em>noise</em> 還來的好解釋，後方的生成網路也能更容易抓到重點。</p>
+<li><h3 id="Mapping-Network"><a href="#Mapping-Network" class="headerlink" title="Mapping Network"></a>Mapping Network</h3><p>  簡單來說 <em>Mapping Network</em> 希望可以更好的解釋資料集，抓到其中的特徵，比如人臉或是車輛的輸入，而這些特色彼此之間可能具有許多關聯，所以使用一個 <em>Style</em> 來表達會比直接輸入 <em>noise</em> 還來的好解釋，後方的生成網路也能更容易抓到重點。</p>
+<p>  <em>Mapping Network</em> 由 8 層 <em>FC</em> 組成 (後面的研究提到 2 層或許效果更好) ，並使用 <em>AdaIN</em> 方法來添加風格</p>
 </li>
-</ul>
-<p><em>Mapping Network</em> 由 8 層 <em>FC</em> 組成 (後面的研究提到 2 層或許效果更好) ，並使用 <em>AdaIN</em> 方法來添加風格</p>
-<ul>
-<li><h3 id="Style-Mixing"><a href="#Style-Mixing" class="headerlink" title="Style Mixing"></a>Style Mixing</h3><em>Style Mixing</em> 是 <em>StyleGAN</em> 的一個特色，能夠使用兩張圖片做為輸入，產生帶有兩張圖片風格、內容的新圖片。</li>
-</ul>
-<p><em>Style Mixing</em> 的做法是先將圖片 <em>project</em> 到 <em>Mapping Network</em> 中，獲得兩個向量 <em>w1</em> 以及 <em>w2</em> ，接著在 <em>Synthesis Network</em> 的許多 <em>block</em> 裡挑一個切點，前半部分輸入 <em>w1</em> 後半輸入 <em>w2</em> ，隨著切點選擇的不同，產生的圖片帶有的資訊也不盡相同，這是因為 <em>Synthesis Network</em> 的每個 <em>block</em> 所負責的部分可能會有差異，比如某個負責臉部表情，某個負責膚色以及質地等等，有很大的操作空間。</p>
-<ul>
+<li><h3 id="Style-Mixing"><a href="#Style-Mixing" class="headerlink" title="Style Mixing"></a>Style Mixing</h3><p>  <em>Style Mixing</em> 是 <em>StyleGAN</em> 的一個特色，能夠使用兩張圖片做為輸入，產生帶有兩張圖片風格、內容的新圖片。</p>
+<p>  <em>Style Mixing</em> 的做法是先將圖片 <em>project</em> 到 <em>Mapping Network</em> 中，獲得兩個向量 <em>w1</em> 以及 <em>w2</em> ，接著在 <em>Synthesis Network</em> 的許多 <em>block</em> 裡挑一個切點，前半部分輸入 <em>w1</em> 後半輸入 <em>w2</em> ，隨著切點選擇的不同，產生的圖片帶有的資訊也不盡相同，這是因為 <em>Synthesis Network</em> 的每個 <em>block</em> 所負責的部分可能會有差異，比如某個負責臉部表情，某個負責膚色以及質地等等，有很大的操作空間。</p>
+</li>
 <li><h3 id="Stochastic-Variation"><a href="#Stochastic-Variation" class="headerlink" title="Stochastic Variation"></a>Stochastic Variation</h3><p>  這個特色的存在是希望可以生成圖像中加入一些隨機的特色，通常是為了控制物體的質地 (更自然)，比如頭髮、皮膚等等。</p>
 <p>  實現方法是在 <em>Synthesis Network</em> 中的每一個 <em>block</em> 加上 <em>noise</em> ，與先前提到過的相同，隨著 <em>block</em> 負責的區塊不同，影響的部分也不一樣。</p>
 </li>
